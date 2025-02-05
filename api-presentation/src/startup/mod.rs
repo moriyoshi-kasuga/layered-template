@@ -1,11 +1,11 @@
-use api_domain::{config::ApiConfig, modules::RepositoryModule};
+use api_domain::config::ApiConfig;
 use axum::Router;
 use tokio::{net::TcpListener, signal};
 
 pub mod log;
 pub mod router;
 
-pub async fn create_server<R: RepositoryModule>(config: &ApiConfig, router: Router) {
+pub async fn create_server(config: &ApiConfig, router: Router) {
     let listener = TcpListener::bind(config.server_addr).await.unwrap();
 
     tracing::info!("API Server listening on {:?}", listener);

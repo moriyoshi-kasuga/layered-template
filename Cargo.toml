@@ -12,10 +12,6 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 
-# [features]
-# default = ["prod"]
-# prod = ["api-presentation/prod"]
-
 [workspace.dependencies]
 api-presentation = { path = "./api-presentation" }
 api-infrastructure = { path = "./api-infrastructure" }
