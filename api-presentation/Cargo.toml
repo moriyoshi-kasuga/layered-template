@@ -27,7 +27,6 @@ tracing-subscriber = { version = "=0.3.19" }
 [dev-dependencies]
 api-domain = { workspace = true, features = ["mockall"] }
 axum-test = "=17.2.0"
-mockall = { workspace = true }
 
 [lints]
 workspace = true
