@@ -1,0 +1,24 @@
+[package]
+name = "api-domain"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+api-shared = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+async-trait = { workspace = true }
+mockall = { workspace = true, optional = true }
+
+envman = { version = "=1.1.0", features = ["derive"] }
+
+[features]
+default = []
+mockall = ["dep:mockall"]
+
+[lints]
+workspace = true
