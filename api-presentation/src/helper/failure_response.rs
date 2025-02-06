@@ -36,20 +36,11 @@ impl IntoFailureResponse for ApiError {
     type E = String;
 
     fn into_failure_response(self) -> FailureResponse<Self::E> {
-        match &self {
-            ApiError::InvalidRequest(_) => {
-                FailureResponse::new(StatusCode::BAD_REQUEST, "Client Error", self.to_string())
-            }
-            ApiError::ServerError(_) => FailureResponse::new(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Server Error",
-                self.to_string(),
-            ),
-            ApiError::DbError(_) => FailureResponse::new(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Server Error",
-                self.to_string(),
-            ),
-        }
+        let (status, message): (StatusCode, &'static str) = match &self {
+            ApiError::InvalidRequest(_) => (StatusCode::BAD_REQUEST, "Client Error"),
+            ApiError::ServerError(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Server Error"),
+            ApiError::DbError(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Server Error"),
+        };
+        FailureResponse::new(status, message, self.to_string())
     }
 }
