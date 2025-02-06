@@ -40,3 +40,5 @@ sqlx = { version = "=0.8.3", features = [
 unwrap_used = "deny"
 expect_used = "deny"
 panic = "deny"
+print_stderr = "deny"
+print_stdout = "deny"
