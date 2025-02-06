@@ -18,4 +18,9 @@ impl DbPool {
     pub async fn begin(&self) -> sqlx::Result<sqlx::Transaction<'static, Sqlite>> {
         self.0.begin().await
     }
+
+    #[cfg(test)]
+    pub fn from_pool(pool: sqlx::Pool<Sqlite>) -> Self {
+        Self(pool)
+    }
 }
