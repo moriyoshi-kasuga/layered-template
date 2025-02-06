@@ -1,5 +1,5 @@
 use api_application::model::health_check::HealthCheckDto;
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Utc};
 use more_convert::Convert;
 use serde::Serialize;
 
@@ -7,5 +7,5 @@ use serde::Serialize;
 #[serde(rename_all = "camelCase")]
 #[convert(from(HealthCheckDto))]
 pub struct HealthCheckResponse {
-    pub server_time: DateTime<Local>,
+    pub server_time: DateTime<Utc>,
 }

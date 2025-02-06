@@ -1,6 +1,6 @@
 use api_domain::{model::HealthCheckModel, repository::health_check::HealthCheckRepository};
 use api_shared::error::ApiResult;
-use chrono::Local;
+use chrono::Utc;
 
 use crate::persistence::db::DbPool;
 
@@ -20,7 +20,7 @@ impl HealthCheckRepository for HealthCheckRepositoryImpl {
         let _ = self.db.pool().acquire().await?;
 
         Ok(HealthCheckModel {
-            server_time: Local::now(),
+            server_time: Utc::now(),
         })
     }
 }

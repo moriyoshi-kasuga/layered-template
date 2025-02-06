@@ -2,6 +2,6 @@
   "status": 200,
   "message": "Health Check is passed",
   "data": {
-    "serverTime": "2025-02-05T22:49:22.000846+09:00"
+    "serverTime": "2025-02-05T13:49:22Z"
   }
 }

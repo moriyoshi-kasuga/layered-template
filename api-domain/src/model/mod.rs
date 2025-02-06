@@ -1,6 +1,6 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Utc};
 
 #[derive(Debug)]
 pub struct HealthCheckModel {
-    pub server_time: DateTime<Local>,
+    pub server_time: DateTime<Utc>,
 }

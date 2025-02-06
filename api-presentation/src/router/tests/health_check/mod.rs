@@ -9,7 +9,7 @@ use crate::router::tests::{assert_response, MockTester};
 async fn test() {
     let mut tester = MockTester::new();
 
-    let time = DateTime::from_str("2025-02-05T22:49:22.000846+09:00").unwrap();
+    let time = DateTime::from_str("2025-02-05T13:49:22Z").unwrap();
 
     let mut health_check = MockHealthCheckRepository::new();
 
