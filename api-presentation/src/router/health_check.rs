@@ -13,5 +13,5 @@ pub async fn get_health_check<R: RepositoryModule>(
         .await
         .map(Into::into);
 
-    ApiResponse::new("Health Check is passed", result)
+    ApiResponse::message("Health Check is passed", result)
 }
