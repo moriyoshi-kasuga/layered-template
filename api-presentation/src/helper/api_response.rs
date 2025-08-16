@@ -1,77 +1,72 @@
 use api_shared::error::ApiError;
 use axum::response::IntoResponse;
-use serde::Serialize;
 
-use super::{failure_response::IntoFailureResponse, success_response::SuccessResponse};
+use super::{failure_response::IntoFailureResponse, success_response::IntoSuccessResponse};
 
-pub type ApiResponse<T> = ApiErrorResponse<T, ApiError>;
+pub type ApiResponse<T> = ApiMessageResponse<T, ApiError>;
+pub type ApiMessageResponse<T, E> = ApiBaseResponse<(&'static str, T), E>;
 
 #[derive(Debug, Clone)]
-pub struct ApiErrorResponse<T, E>(Result<(&'static str, T), E>);
+pub struct ApiBaseResponse<T, E>(Result<T, E>);
 
-impl<T, E> ApiErrorResponse<T, E> {
+impl<T, E> ApiBaseResponse<T, E> {
     /// multiple message response
     ///
     /// ```rust
-    /// # use api_presentation::helper::api_response::ApiResponse;
+    /// # use api_presentation::helper::api_response::ApiBaseResponse;
     /// struct ItemResponse {
     ///     item_name: String,
     /// }
     ///
-    /// // some graceful process
-    /// let result = {
+    /// let result: Result<ItemResponse, ()> = {
+    ///     // some graceful process
+    ///     // ...
     ///     Ok(ItemResponse { item_name: String::from("Item Name") })
     /// };
     ///
-    /// let result = result.map(|v| {
-    ///     let message = match v.item_name.as_str() {
-    ///         "Item Name" => "Successfully get Item Name!",
-    ///         _ => "Successfully get item",
-    ///     };
-    ///     (message, v)
-    /// });
-    ///
-    /// ApiResponse::new(result);
+    /// ApiBaseResponse::new(result);
     /// ```
     ///
     /// * `result`: processed data
-    pub fn new(result: Result<(&'static str, T), E>) -> Self {
+    #[inline]
+    pub const fn new(result: Result<T, E>) -> Self {
         Self(result)
     }
+}
 
+impl<T, E> ApiMessageResponse<T, E> {
     /// const message response
     ///
     /// ```rust
-    /// # use api_presentation::helper::api_response::ApiResponse;
+    /// # use api_presentation::helper::api_response::ApiMessageResponse;
     /// struct ItemResponse {
     ///     item_name: String,
     /// }
     ///
-    /// // some graceful process
-    /// let result = {
+    /// let result: Result<ItemResponse, ()> = {
+    ///     // some graceful process
+    ///     // ...
     ///     Ok(ItemResponse { item_name: String::from("Item Name") })
     /// };
     ///
-    /// ApiResponse::message("Successfully get item", result);
+    /// ApiMessageResponse::message("Successfully get item", result);
     ///
     /// ```
     /// * `message`: success message
     /// * `result`: processed data
+    #[inline]
     pub fn message(message: &'static str, result: Result<T, E>) -> Self {
-        Self(result.map(|v| (message, v)))
+        match result {
+            Ok(t) => Self(Ok((message, t))),
+            Err(e) => Self(Err(e)),
+        }
     }
 }
 
-impl<T, E> From<(&'static str, Result<T, E>)> for ApiErrorResponse<T, E> {
-    fn from(value: (&'static str, Result<T, E>)) -> Self {
-        Self::message(value.0, value.1)
-    }
-}
-
-impl<T: Serialize, E: Serialize + IntoFailureResponse> IntoResponse for ApiErrorResponse<T, E> {
+impl<T: IntoSuccessResponse, E: IntoFailureResponse> IntoResponse for ApiBaseResponse<T, E> {
     fn into_response(self) -> axum::response::Response {
         match self.0 {
-            Ok(ok) => SuccessResponse::new(ok.0, ok.1).into_response(),
+            Ok(ok) => ok.into_success_response().into_response(),
             Err(err) => err.into_failure_response().into_response(),
         }
     }
