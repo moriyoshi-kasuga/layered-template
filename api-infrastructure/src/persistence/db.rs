@@ -5,10 +5,9 @@ use sqlx::{Pool, Sqlite, SqlitePool};
 pub struct DbPool(sqlx::Pool<Sqlite>);
 
 impl DbPool {
-    #[allow(clippy::unwrap_used)]
-    pub async fn new(config: &DbConfig) -> Self {
-        let pool = SqlitePool::connect(&config.db_url).await.unwrap();
-        Self(pool)
+    pub async fn new(config: &DbConfig) -> Result<Self, sqlx::Error> {
+        let pool = SqlitePool::connect(&config.db_url).await?;
+        Ok(Self(pool))
     }
 
     pub fn pool(&self) -> Pool<Sqlite> {

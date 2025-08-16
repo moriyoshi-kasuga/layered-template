@@ -15,8 +15,7 @@ pub struct ApiConfig {
 }
 
 impl ApiConfig {
-    #[allow(clippy::unwrap_used)]
-    pub fn init() -> Self {
-        ApiConfig::load().unwrap()
+    pub fn init() -> Result<Self, envman::EnvManError> {
+        ApiConfig::load()
     }
 }
