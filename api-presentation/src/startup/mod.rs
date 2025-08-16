@@ -1,3 +1,5 @@
+#![allow(clippy::panic, clippy::expect_used)]
+
 use api_domain::config::ApiConfig;
 use axum::Router;
 use tokio::{net::TcpListener, signal};
@@ -6,14 +8,16 @@ pub mod log;
 pub mod router;
 
 pub async fn create_server(config: &ApiConfig, router: Router) {
-    let listener = TcpListener::bind(config.server_addr).await.unwrap();
+    let listener = TcpListener::bind(config.server_addr)
+        .await
+        .expect("failed to bind tcp");
 
     tracing::info!("API Server listening on {:?}", listener);
 
     axum::serve(listener, router.into_make_service())
         .with_graceful_shutdown(shutdown_signal())
         .await
-        .unwrap_or_else(|_| panic!("API Server cannot launch"))
+        .expect("API Server cannot launch")
 }
 
 async fn shutdown_signal() {
